@@ -2,8 +2,8 @@
         //session_start();
         require '../Settings/bdd.inc.php';
         require '../Settings/mail.inc.php';
-        //if(!isset($_COOKIE[$role]))
-            //header("Location: ../");
+        if(isset($_COOKIE['connected']))
+            header("Location: ../");
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //On prepare notre requêtte SQL
             $sth = $db->prepare("SELECT * FROM users WHERE user= :user AND password = :password");
@@ -58,7 +58,7 @@
                 //
                 //$_SESSION['connexion_test'] = FALSE; //Sinon la session est à false
                // echo 'lo';
-                header("Location: index.php"); //On redérife vers la même page
+                header("Location: index.php?error=true"); //On redérife vers la même page
                // $_SESSION['connexion_test'] ? 'true' : 'false';
                // var_dump($_SESSION['connexion_test']);
             }
@@ -115,6 +115,10 @@
                         	<div class="form-top">
                         		<div class="form-top-left">
                         			<h3>Login to our site</h3>
+                                                <?php
+                                                    if(isset($_GET['error']))
+                                                        echo "<h4 class=\"text-red\" align=\"center\">Your login informations are not correct</h4>";
+                                                ?>
                             		<p>Enter your username and password to log on:</p>
                         		</div>
                         		<div class="form-top-right">

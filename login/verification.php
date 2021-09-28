@@ -1,6 +1,9 @@
 <?php
         //session_start();
         require '../Settings/bdd.inc.php';
+        require '../Settings/mail.inc.php';
+        if(!isset($_COOKIE['role']))
+            header("Location: ../");
         $uid = $_GET['uid'];
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //On prepare notre requêtte SQL
@@ -24,6 +27,7 @@
                         //$nom=$donnees["nom"].' '.$donnees["prenom"]; //On mets dedant le nom et prenom de l'utilisateur
                         //$username = $donnees['user']; //On recupére l'email d'utilisateur
                         $sth->closeCursor(); //On fermer notre connexion SQL
+                        setcookie('connected', $uid, time() + 1530,'/');
                         // echo 'ça marche<BR>';
                         //$sid = md5($_POST['email'] . time()); //On hash par le md5 l'email de l'utilisateur avec le temps actuel pour que ça soit difficile à déchifrer
                         // echo $sid;
@@ -47,12 +51,30 @@
                         header("Location: ../"); //On redérige l'utilisateur vers la page d'acceuil avec un message de succés
                         //  break;
                     }
+                    else{
+                        header("Location: verification.php?uid=".$_COOKIE['uid']."&error=true");
+                        $rand = random_int(1000, 9999);
+                        $mail->Body = 'Your confirmation code is : '.$rand;
+                        
+                        $var=$donnees["role"]; //On déclare une variable pour qu'on puisse tester le statut du membre plutard
+                        $uid=$donnees["id"]; // On aura besoin de l'id d'utilisateur plutard
+                        $email=$donnees["email"]; //On mets dedant le nom et prenom de l'utilisateur
+                        $role=$donnees["role"];
+                        $mail->addAddress($email);
+                        $mail->send();
+                        $service = $db->prepare("UPDATE users SET authverif=:rand WHERE email=:email");
+                        //On bind les paramêtres dont on a besoin
+                        $service->bindValue(':email', $email, PDO::PARAM_STR);
+                        $service->bindValue(':rand', $rand, PDO::PARAM_STR);
+                        //On execute notre requêtte
+                        $service->execute();
+                    }
                 }
             } else {
                 //
                 //$_SESSION['connexion_test'] = FALSE; //Sinon la session est à false
                // echo 'lo';
-                header("Location: index.php"); //On redérife vers la même page
+                header("Location: verification.php?uid=".$_COOKIE['uid']."&error=true"); //On redérife vers la même page
                // $_SESSION['connexion_test'] ? 'true' : 'false';
                // var_dump($_SESSION['connexion_test']);
             }
@@ -109,6 +131,13 @@
                         	<div class="form-top">
                         		<div class="form-top-left">
                         			<h3>2 Authentication Steps</h3>
+                                                 <?php
+                                                    if(isset($_GET['error'])){
+                                                         echo "<h4 class=\"text-red\" align=\"center\">Your confirmation code is not correct</h4>";
+                                                         echo "<h4 class=\"text-red\" align=\"center\">Another code was sent to your email</h4>";
+                                                    }
+                                                       
+                                                ?>
                             		<p>Enter the code your recieved on your email.</p>
                         		</div>
                         		<div class="form-top-right">

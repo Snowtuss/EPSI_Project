@@ -12,6 +12,9 @@ if (isset($_COOKIE["role"])) {
 if (isset($_COOKIE["uid"])) {
     setcookie('uid', null, -1,'/'); //Si un admin est connecté on le deconnect
 }
+if (isset($_COOKIE["connected"])) {
+    setcookie('connected', null, -1,'/'); //Si un admin est connecté on le deconnect
+}
 //On le redérige vers la page index
 header("Location: index.php");
 ?>

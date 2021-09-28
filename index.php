@@ -1,5 +1,5 @@
 <?php
-if(!isset($_COOKIE['role']))
+if(!isset($_COOKIE['connected']))
     header("Location: login/index.php");
      
 ?>
@@ -92,10 +92,10 @@ if(!isset($_COOKIE['role']))
                             <li><a href="#home">Home</a></li>                    
                             <li><a href="#features">Features</a></li>
                             <li><a href="#reviews">Reviews</a></li>
-                            <li><a href="#download">Download</a></li>
+                            <li><a href="files/file.pdf" target="_blank">Download</a></li>
                             <?php
                                 if($_COOKIE['role'] == "admin")
-                                    echo "<li><a href=\"#download\">Configuration</a></li>";
+                                    echo "<li><a href=\"#\">Configuration</a></li>";
                                 ;
                             ?>
                             <li><a href="login/disconnect.php">Disconnect</a></li>
@@ -112,23 +112,19 @@ if(!isset($_COOKIE['role']))
                         <div class="main_home">
                             <div class="col-md-6">
                                 <div class="home_text">
-                                    <h1 class="text-white">Hello <?php echo $_COOKIE['role'] ?></h1>
-                                    <h2 class="text-white"><?php echo $_COOKIE['user'] ?></h2>
+                                    <h1 class="text-white">Hello <?php echo $_COOKIE['user'] ?></h1>
+                                    <h2 class="text-white"><?php echo $_COOKIE['role'] ?></h2>
                                 </div>
 
                                 <div class="home_btns m-top-40">
-                                    <a href="" class="btn btn-danger m-top-20">Download</a>
+                                    <a href="files/file.pdf" class="btn btn-danger m-top-20" target="_blank">Download</a>
                                     <a href="" class="btn btn-primary m-top-20">Features</a>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="phone_one phone_attr1 text-center sm-m-top-50">
-                                    <div class="attr_deg">9&deg;</div>
-                                    <div class="attr_rio text-uppercase">Rio</div>
-                                    <div class="attr_sun text-uppercase text-white">Sunny</div>
-                                    <div class="attr_lon text-uppercase text-white">London</div>
-                                    <img src="assets/images/phone01.png" alt="" />
+                                    <img src="assets/images/main_picture.png" alt="" />
                                 </div>
                             </div>
 
