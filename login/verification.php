@@ -2,9 +2,13 @@
         //session_start();
         require '../Settings/bdd.inc.php';
         require '../Settings/mail.inc.php';
+        require '../Settings/hash.inc.php';
         if(!isset($_COOKIE['role']))
             header("Location: ../");
-        $uid = $_GET['uid'];
+        $hashObj = new Hash();
+        $uid = $hashObj->unhashFunc($_GET['uid']);
+        //echo $uid;
+        //echo "<script>alert(\"".$hashObj->unhashFunc($_COOKIE['role'])."\")</script>";
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //On prepare notre requêtte SQL
             $sth = $db->prepare("SELECT * FROM users WHERE id= :id");
@@ -27,7 +31,7 @@
                         //$nom=$donnees["nom"].' '.$donnees["prenom"]; //On mets dedant le nom et prenom de l'utilisateur
                         //$username = $donnees['user']; //On recupére l'email d'utilisateur
                         $sth->closeCursor(); //On fermer notre connexion SQL
-                        setcookie('connected', $uid, time() + 1530,'/');
+                        setcookie('connected', $hashObj->hashFunc($uid), time() + 1530,'/');
                         // echo 'ça marche<BR>';
                         //$sid = md5($_POST['email'] . time()); //On hash par le md5 l'email de l'utilisateur avec le temps actuel pour que ça soit difficile à déchifrer
                         // echo $sid;
@@ -54,7 +58,7 @@
                     else{
                         header("Location: verification.php?uid=".$_COOKIE['uid']."&error=true");
                         $rand = random_int(1000, 9999);
-                        $mail->Body = 'Your confirmation code is : '.$rand;
+                        $mail->Body = mailBody($rand);
                         
                         $var=$donnees["role"]; //On déclare une variable pour qu'on puisse tester le statut du membre plutard
                         $uid=$donnees["id"]; // On aura besoin de l'id d'utilisateur plutard

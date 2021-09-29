@@ -1,7 +1,9 @@
 <?php
+require 'Settings/hash.inc.php';
 if(!isset($_COOKIE['connected']))
     header("Location: login/index.php");
-     
+  
+$hashObj = new Hash();
 ?>
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -94,7 +96,7 @@ if(!isset($_COOKIE['connected']))
                             <li><a href="#reviews">Reviews</a></li>
                             <li><a href="files/file.pdf" target="_blank">Download</a></li>
                             <?php
-                                if($_COOKIE['role'] == "admin")
+                                if($hashObj->unhashFunc($_COOKIE['role']) == "admin")
                                     echo "<li><a href=\"#\">Configuration</a></li>";
                                 ;
                             ?>
@@ -112,8 +114,8 @@ if(!isset($_COOKIE['connected']))
                         <div class="main_home">
                             <div class="col-md-6">
                                 <div class="home_text">
-                                    <h1 class="text-white">Hello <?php echo $_COOKIE['user'] ?></h1>
-                                    <h2 class="text-white"><?php echo $_COOKIE['role'] ?></h2>
+                                    <h1 class="text-white">Hello <?php echo $hashObj->unhashFunc($_COOKIE['user']) ?></h1>
+                                    <h2 class="text-white"><?php echo $hashObj->unhashFunc($_COOKIE['role']) ?></h2>
                                 </div>
 
                                 <div class="home_btns m-top-40">

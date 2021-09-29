@@ -2,8 +2,10 @@
         //session_start();
         require '../Settings/bdd.inc.php';
         require '../Settings/mail.inc.php';
+        require '../Settings/hash.inc.php';
         if(isset($_COOKIE['connected']))
             header("Location: ../");
+        $hashObj = new Hash();
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //On prepare notre requêtte SQL
             $sth = $db->prepare("SELECT * FROM users WHERE user= :user AND password = :password");
@@ -21,8 +23,10 @@
                     //Si l'email et le mot de passe sont correcte
                     if (($_POST['form-username'] == $donnees['user']) && ($_POST['form-password'] == $donnees['password'])) {
                         $rand = random_int(1000, 9999);
-                        $mail->Body = 'Your confirmation code is : '.$rand;
                         
+                        
+                        $mail->Body = mailBody($rand);
+                        //$mail->Body = $htmlbody;
                         $var=$donnees["role"]; //On déclare une variable pour qu'on puisse tester le statut du membre plutard
                         $uid=$donnees["id"]; // On aura besoin de l'id d'utilisateur plutard
                         $email=$donnees["email"]; //On mets dedant le nom et prenom de l'utilisateur
@@ -42,15 +46,15 @@
                         //On execute notre requêtte
                         $service->execute();
                         //setcookie('sid', $sid, time() + 1530); //Ce cookie va nous permettre de savoir si un utilisateur est connecté
-                        setcookie('user', $username, time() + 1530,'/');//On va utiliser ce cookie dans la partie des commentaires oû on va recuperer le nom d'utilisateur connecté et de le placé dans la base de données des commentaires sans que l'utilisateur le saisie
-                        setcookie('email', $email, time() + 1530,'/');//On va utiliser ce cookie dans la partie des commentaires oû on va recuperer l'email d'utilisateur connecté et de le placé dans la base de données des commentaires sans que l'utilisateur le saisie
-                        setcookie('uid', $uid, time() + 1530,'/');//On va l'utiliser plutard dans les commentaires aussi
+                        setcookie('user', $hashObj->hashFunc($username), time() + 1530,'/');//On va utiliser ce cookie dans la partie des commentaires oû on va recuperer le nom d'utilisateur connecté et de le placé dans la base de données des commentaires sans que l'utilisateur le saisie
+                        setcookie('email', $hashObj->hashFunc($email), time() + 1530,'/');//On va utiliser ce cookie dans la partie des commentaires oû on va recuperer l'email d'utilisateur connecté et de le placé dans la base de données des commentaires sans que l'utilisateur le saisie
+                        setcookie('uid', $hashObj->hashFunc($uid), time() + 1530,'/');//On va l'utiliser plutard dans les commentaires aussi
                         //setcookie('role', $role, time() + 1530);//Ce cookie va nous permettre de savoir qu'un admin est connecté et lui afficher des fonctionalités que l'admin qui a le droit de les voir
-                        setcookie('role', $role, time() + 1530,'/');
+                        setcookie('role', $hashObj->hashFunc($role), time() + 1530,'/');
                         ////$_SESSION['connexion_test'] = TRUE; //Session facultatif pour informer l'utilisateur qu'il est bien connecté
                         //$service->closeCursor(); //On ferme notre connexion SQL
                         //header("Location: ../"); //On redérige l'utilisateur vers la page d'acceuil avec un message de succés
-                        header("Location: verification.php?uid=".$uid);
+                        header("Location: verification.php?uid=".$hashObj->hashFunc($uid));
                         //  break;
                     }
                 }
