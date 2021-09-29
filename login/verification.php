@@ -134,7 +134,7 @@
                         <div class="col-sm-6 col-sm-offset-3 form-box">
                         	<div class="form-top">
                         		<div class="form-top-left">
-                        			<h3>2 Authentication Steps</h3>
+                        			<h3>Two-Factor Authentication</h3>
                                                  <?php
                                                     if(isset($_GET['error'])){
                                                          echo "<h4 class=\"text-red\" align=\"center\">Your confirmation code is not correct</h4>";
