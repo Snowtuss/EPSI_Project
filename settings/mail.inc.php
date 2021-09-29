@@ -11,7 +11,7 @@ $mail->Host = 'smtp.gmail.com';
 $mail->Port = '465';
 $mail->isHTML();
 $mail->Username = 'dawavecorp@gmail.com';
-$mail->Password = '15995123sN';
+$mail->Password = '';
 $mail->setFrom('dawavecorp@gmail.com');
 $mail->Subject = 'Your verification Code';
 
